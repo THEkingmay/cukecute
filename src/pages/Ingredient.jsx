@@ -37,10 +37,16 @@ export default function IngredientPage() {
                   <span className="d-block text-muted">
                     ⚖️ <strong>ราคาต่อกรัม:</strong> {i.data.pricePerGram} บาท
                   </span>
+                  <span className="d-block text-muted">
+                    🎈 <strong>ปริมาณถ้วยเล็ก:</strong> {i.data.quantitySmall} กรัม
+                  </span>
+                  <span className="d-block text-muted">
+                    🎈 <strong>ปริมาณถ้วยใหญ่</strong> {i.data.quantityBig} กรัม
+                  </span>
                 </p>
                 <div className="d-flex justify-content-end gap-2">
                   <button 
-                    className="btn btn-sm btn-outline-danger"
+                    className="btn btn-sm w-100 btn-outline-danger"
                     data-bs-toggle="modal"
                     data-bs-target={`#deleteModal-${i.id}`}
                   >

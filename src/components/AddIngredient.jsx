@@ -8,6 +8,9 @@ export default function AddIngredientModal() {
   const [pricePerUnit, setPricePerUnit] = useState(0);
   const [unit, setUnit] = useState("kilogram");
   const [gramIfUnitGram, setGram] = useState(0);
+  const [quantitySmall , setQSM] = useState(0)
+  const [quantityBig , setQB] = useState(0)
+
 const { fetchIngredient} = useContext(DataContext)
 
   const submitAdd = async() => {
@@ -23,6 +26,10 @@ const { fetchIngredient} = useContext(DataContext)
       alert("⚠️ ระบุน้ำหนักกรัมให้ถูกต้อง");
       return;
     }
+    if(quantityBig===0 || quantitySmall===0){
+     alert("⚠️ กรอกปริมาณให้ถูกต้องต้องมากกว่า0");
+      return;
+    }
 
     const pricePerGram =
       unit === "kilogram"
@@ -34,7 +41,9 @@ const { fetchIngredient} = useContext(DataContext)
         pricePerUnit,
         unit,
         perUnit:unit=='kilogram'? 1 : gramIfUnitGram , // if unit is Kilogram set to 1 else if gram set perunit
-        pricePerGram
+        pricePerGram,
+        quantityBig,
+        quantitySmall
     };
     try{
         await addNewIngredient(newIngredient)
@@ -142,6 +151,31 @@ const { fetchIngredient} = useContext(DataContext)
                 />
               </div>
             )}
+            <div className="mb-3">
+              <label className="form-label">ปริมาณที่ใช้ (กรัม)</label>
+              <div className="input-group mb-2">
+                <span className="input-group-text">ถ้วยเล็ก 🥤</span>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="เช่น 15"
+                  value={quantitySmall}
+                  onChange={(e) => setQSM(Number(e.target.value))}
+                />
+                <span className="input-group-text">กรัม</span>
+              </div>
+              <div className="input-group">
+                <span className="input-group-text">ถ้วยใหญ่ 🧋</span>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="เช่น 30"
+                  value={quantityBig}
+                  onChange={(e) => setQB(Number(e.target.value))}
+                />
+                <span className="input-group-text">กรัม</span>
+              </div>
+            </div>
           </div>
 
           <div className="modal-footer">

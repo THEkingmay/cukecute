@@ -1,20 +1,42 @@
 import { deleteIngredient } from "../firebases/ingredient";
+import { deleteSpecial } from "../firebases/specialIngredient";
+import { deleteSource } from "../firebases/source";
+
 import {DataContext} from "../pages/DataContextProvider";
 import { useContext } from "react";
 
-export default function ConfirmToDeleteIngredient({ id, name }) {
+export default function ConfirmToDeleteIngredient({ id, name , type}) {
   const {fetchIngredient} = useContext(DataContext)
   
-    const handleDelete = () => {
-    deleteIngredient(id)
-      .then(() => {
-        document.getElementById(`close-delete-${id}`).click(); // ปิด modal
-        fetchIngredient()
-      })
-      .catch((err) => {
-        alert("❌ ลบไม่สำเร็จ: " + err.message);
-      });
-  };
+   const handleDelete = async () => {
+  try {
+    if (type === 'ingredient') await deleteIngredient(id);
+    else if (type === 'special') await deleteSpecial(id);
+    else if (type === 'source') await deleteSource(id);
+
+    await fetchIngredient();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    // ให้ใช้ id ให้ตรงกับ modal ที่ประกาศไว้
+    const modalId = `deleteModal-${id}`;
+    const myModalEl = document.getElementById(modalId);
+
+    if (myModalEl) {
+      const modal = bootstrap.Modal.getInstance(myModalEl);
+      if (modal) {
+        modal.hide();
+      } else {
+        // ถ้ายังไม่มี instance ให้สร้างขึ้นก่อน
+        const newModal = new bootstrap.Modal(myModalEl);
+        newModal.hide();
+      }
+    } else {
+      console.warn(`ไม่พบ modal ที่ id = ${modalId}`);
+    }
+  }
+};
+
 
   return (
     <div

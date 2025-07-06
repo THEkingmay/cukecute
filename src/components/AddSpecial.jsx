@@ -1,94 +1,100 @@
-import { useState } from "react";
-import { addNewIngredient } from "../firebases/ingredient";
-import { useContext } from "react";
-import {DataContext} from "../pages/DataContextProvider";
+import { useState, useContext } from "react";
+import { DataContext } from "../pages/DataContextProvider";
+import { addSpecial } from "../firebases/specialIngredient";
 
-export default function AddIngredientModal() {
+export default function AddSpecialModal() {
   const [name, setName] = useState("");
   const [pricePerUnit, setPricePerUnit] = useState(0);
   const [unit, setUnit] = useState("kilogram");
   const [gramIfUnitGram, setGram] = useState(0);
-  const [quantitySmall , setQSM] = useState(0)
-  const [quantityBig , setQB] = useState(0)
+  const [quantitySmall, setQSM] = useState(0);
+  const [quantityBig, setQB] = useState(0);
+  const [plusPrice, setPlusPrice] = useState(0); // เผื่อใช้ในอนาคต
 
-const { fetchIngredient} = useContext(DataContext)
+  const { fetchIngredient } = useContext(DataContext);
 
-  const submitAdd = async() => {
-    if (!name.trim()) {
-      alert("⚠️ กรุณากรอกชื่อวัตถุดิบ");
-      return;
-    }
-    if (pricePerUnit <= 0) {
-      alert("⚠️ ราคาต่อหน่วยต้องมากกว่า 0");
-      return;
-    }
-    if (unit === "gram" && gramIfUnitGram <= 0) {
-      alert("⚠️ ระบุน้ำหนักกรัมให้ถูกต้อง");
-      return;
-    }
-    if(quantityBig===0 || quantitySmall===0){
-     alert("⚠️ กรอกปริมาณให้ถูกต้องต้องมากกว่า0");
+  const validateForm = () => {
+    if (!name.trim()) return "⚠️ กรุณากรอกชื่อวัตถุดิบ";
+    if (pricePerUnit <= 0) return "⚠️ ราคาต่อหน่วยต้องมากกว่า 0";
+    if (unit === "gram" && gramIfUnitGram <= 0)
+      return "⚠️ ระบุน้ำหนักกรัมให้ถูกต้อง";
+    if (quantityBig === 0 || quantitySmall === 0)
+      return "⚠️ กรอกปริมาณให้ถูกต้องต้องมากกว่า 0";
+    if (plusPrice<0) return "⚠️ ราคาต่อ 1 ที่ต้องไม่ติดลบ";
+    return null;
+  };
+
+  const resetForm = () => {
+    setName("");
+    setPricePerUnit(0);
+    setUnit("kilogram");
+    setGram(0);
+    setQSM(0);
+    setQB(0);
+    setPlusPrice(0);
+  };
+
+  const submitAdd = async () => {
+    const error = validateForm();
+    if (error) {
+      alert(error);
       return;
     }
 
     let pricePerGram =
       unit === "kilogram"
-        ? pricePerUnit/1000
+        ? pricePerUnit / 1000
         : pricePerUnit / gramIfUnitGram;
-      
-    pricePerGram = Math.round(pricePerGram * 1000) / 1000; // เอาทศนิมยม 3 ตำแหน่ง
 
-    const newIngredient = { 
-        name, 
-        pricePerUnit,
-        unit,
-        perUnit:unit=='kilogram'? 1 : gramIfUnitGram , // if unit is Kilogram set to 1 else if gram set perunit
-        pricePerGram,
-        quantityBig,
-        quantitySmall
+    pricePerGram = Number(pricePerGram.toFixed(3)); // เอาทศนิยม 3 ตำแหน่ง
+
+    const newIngredient = {
+      name,
+      pricePerUnit,
+      unit,
+      perUnit: unit === "kilogram" ? 1 : gramIfUnitGram,
+      pricePerGram,
+      quantityBig,
+      quantitySmall,
+      plusPrice,
     };
-    try{
-        document.getElementById("closeModalBtn").click(); // ปิด modal
-        await addNewIngredient(newIngredient)
-        console.log("✅ วัตถุดิบใหม่:", newIngredient);
-        fetchIngredient()
-    }catch(err){
-        alert(err)
-        console.log(err)
-    }finally{
-        // reset
-        setName("");
-        setPricePerUnit(0);
-        setUnit("kilogram");
-        setGram(0);
-     }
-    
+
+    try {   
+        document.getElementById("closeSpecialModalBtn").click(); // ปิด modal
+      await addSpecial(newIngredient);
+      console.log("✅ วัตถุดิบพิเศษใหม่:", newIngredient);
+      await fetchIngredient();
+    } catch (err) {
+      alert("❌ เกิดข้อผิดพลาด: " + err.message);
+      console.error(err);
+    } finally {
+      resetForm();
+    }
   };
 
   return (
     <div
       className="modal fade"
-      id="addIngredientModal"
+      id="addSpecial"
       tabIndex="-1"
-      aria-labelledby="addIngredientModalLabel"
+      aria-labelledby="addSpecialModalLabel"
       aria-hidden="true"
     >
       <div className="modal-dialog">
         <div className="modal-content bg-light">
           <div className="modal-header">
-            <h5 className="modal-title" id="addIngredientModalLabel">
-              ➕ เพิ่มวัตถุดิบใหม่
+            <h5 className="modal-title" id="addSpecialModalLabel">
+              ➕ เพิ่มวัตถุดิบพิเศษใหม่
             </h5>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="ปิด"
-              id="closeModalBtn"
+              id="closeSpecialModalBtn"
             ></button>
           </div>
           <div className="modal-body">
-
             <div className="mb-3">
               <label className="form-label">ชื่อวัตถุดิบ 🏷️</label>
               <input
@@ -153,6 +159,7 @@ const { fetchIngredient} = useContext(DataContext)
                 />
               </div>
             )}
+
             <div className="mb-3">
               <label className="form-label">ปริมาณที่ใช้ (กรัม)</label>
               <div className="input-group mb-2">
@@ -178,6 +185,17 @@ const { fetchIngredient} = useContext(DataContext)
                 <span className="input-group-text">กรัม</span>
               </div>
             </div>
+
+            <div className="mb-3">
+                <label className="form-label">ราคาต่อ 1 ที่ ➕</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    placeholder="เช่น 10, 20"
+                    value={plusPrice}
+                    onChange={(e) => setPlusPrice(Number(e.target.value))}
+                />
+                </div>
           </div>
 
           <div className="modal-footer">
@@ -185,6 +203,7 @@ const { fetchIngredient} = useContext(DataContext)
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
+              id="closeModal"
             >
               ❌ ยกเลิก
             </button>

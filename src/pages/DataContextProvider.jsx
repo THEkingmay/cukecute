@@ -2,6 +2,8 @@ import { createContext, useEffect , useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { getAllIngredient } from "../firebases/ingredient"
 import { getAllOrders } from "../firebases/orders"
+import { getAllSource } from "../firebases/source"
+import { getAllSpecial } from "../firebases/specialIngredient"
 
 const DataContext = createContext()
 
@@ -9,6 +11,8 @@ export default function DataContextProvider({ children }) {
   const [isLoading , setLoading ] = useState(true)
 
   const [ingredientContext , setIngredient] = useState([])
+  const [specialContext , setSpecial ] = useState([])
+  const [sourceContext , setSource ] = useState([])
   const [ordersContext , setOrders] = useState([])
 
   const location = useLocation()
@@ -18,6 +22,10 @@ export default function DataContextProvider({ children }) {
     try{
         const data = await getAllIngredient()
         if(data) setIngredient(data)
+        const special = await getAllSpecial()
+        if(special) setSpecial(special)
+        const souce = await getAllSource()
+        if(souce) setSource(souce)
     }catch(err){
         alert(err)
     }
@@ -41,7 +49,7 @@ export default function DataContextProvider({ children }) {
   if(isLoading)return <div>Loading</div>
 
   return (
-    <DataContext.Provider value={{ navigate, location , ingredientContext , fetchIngredient  , ordersContext}}>
+    <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , ordersContext}}>
       {children}
     </DataContext.Provider>
   )

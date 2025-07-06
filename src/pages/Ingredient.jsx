@@ -24,9 +24,10 @@ export default function IngredientPage() {
         </button>
       </div>
       
-      <div className="row">
+      <div className="row shadow-sm rounded p-2">
+        <div  className="h5">วัตถุดิบทั่วไป</div>
         {ingredient.map((i) => (
-          <div className="col-md-6 col-lg-4 mb-4" key={i.id}>
+          <div className="col-md-6 col-lg-3 mb-2" key={i.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
                 <h5 className="card-title">{i.data.name}</h5>
@@ -58,8 +59,17 @@ export default function IngredientPage() {
             </div>
           </div>
         ))}
+        <AddIngredientModal/>
       </div>
-      <AddIngredientModal/>
+      
+      <div className="row shadow-sm rounded p-2 mt-2">
+          <div className="col col-12 col-lg-6 p-2 border">
+                <div className="h5">วัตถุดิบพิเศษ</div>
+          </div>
+          <div className="col col-12 col-lg-6 p-2">
+              <div className="h5">ซอส</div>
+          </div>
+      </div>
     </div>
   )
 }

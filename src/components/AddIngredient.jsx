@@ -31,10 +31,12 @@ const { fetchIngredient} = useContext(DataContext)
       return;
     }
 
-    const pricePerGram =
+    let pricePerGram =
       unit === "kilogram"
         ? pricePerUnit/1000
         : pricePerUnit / gramIfUnitGram;
+      
+    pricePerGram = Math.round(rawPricePerGram * 1000) / 1000; // เอาทศนิมยม 3 ตำแหน่ง
 
     const newIngredient = { 
         name, 

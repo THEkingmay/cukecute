@@ -23,6 +23,7 @@ export default function AddNewOrder() {
 
   const [cupSize , setCup ] = useState(0)
   const [selectToping , setSelectToping] = useState([])
+  const [selectSource , setSelectSource ] = useState([])
 
   useEffect(()=>{
     // console.log("Cupsize  : ", cupSize)
@@ -35,7 +36,16 @@ export default function AddNewOrder() {
           console.log("Toping ", moreQuotaToping)
           setCurrPrice(cupSize+moreQuotaToping)
     }else setCurrPrice(cupSize)
-  },[cupSize , selectToping])
+
+    if(selectSource.length>1){
+      const moreSource = (selectSource.length-1)*5
+      setCurrPrice(prev=>prev+moreSource)
+    }
+
+  },[cupSize , selectToping , selectSource])
+
+  
+
 
   const handleCupsize =(size) =>{
     setCup(size)
@@ -58,6 +68,10 @@ export default function AddNewOrder() {
         setSelectToping(prev=>[...prev , id])
         document.getElementById(`TP${id}`).className="btn btn-success"
     }
+  }
+
+  const handleSelectSource = (id)=>{
+    
   }
 
   return (

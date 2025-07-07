@@ -46,7 +46,7 @@ export default function DataContextProvider({ children }) {
     setLoading(false)
   },[])
 
-  if(isLoading)return <div>Loading</div>
+  if(isLoading)return <div>กำลังโหลด...</div>
 
   return (
     <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , ordersContext}}>

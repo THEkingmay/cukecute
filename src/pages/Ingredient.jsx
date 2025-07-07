@@ -4,15 +4,23 @@ import AddIngredientModal from "../components/AddIngredient"
 import AddSourceModal from "../components/AddSource"
 import AddSpecialModal from "../components/AddSpecial"
 
-import { deleteIngredient } from "../firebases/ingredient";
-import { deleteSpecial } from "../firebases/specialIngredient";
-import { deleteSource } from "../firebases/source";
+import ConfirmToDeleteIngredient from "../components/ConfirmDeleteIngredient"
+
 
 export default function IngredientPage() {
   const [ingredient, setIngredient] = useState([])
   const [special , setSpecial ] = useState([])
   const [source , setSource] = useState([])
   const { ingredientContext , specialContext , sourceContext } = useContext(DataContext)
+
+  const [selectIDtoDelete , setIdDelete] = useState({
+    id:"" , 
+    name:"" , 
+    type : "" 
+  })
+  const clearSelDelete = ()=>{
+    setIdDelete({id:'',name:'',type:''})
+  }
 
   useEffect(() => {
     setIngredient(ingredientContext)
@@ -21,22 +29,6 @@ export default function IngredientPage() {
   }, [ingredientContext , sourceContext , specialContext])
 
   const { fetchIngredient } = useContext(DataContext); // ถ้าอยู่ใน context
-
-  const handleDelete = async (id, name, type) => {
-    const confirmDelete = window.confirm(`คุณต้องการลบ "${name}" ใช่หรือไม่? ข้อมูลนี้จะหายไปถาวร`);
-    if (!confirmDelete) return;
-
-    try {
-      if (type === 'ingredient') await deleteIngredient(id);
-      else if (type === 'special') await deleteSpecial(id);
-      else if (type === 'source') await deleteSource(id);
-
-      await fetchIngredient();
-    } catch (err) {
-      console.error("เกิดข้อผิดพลาดในการลบ:", err);
-      alert("เกิดข้อผิดพลาดในการลบ กรุณาลองใหม่");
-    }
-  };
 
  return (
   <div className="container mt-4">
@@ -70,9 +62,8 @@ export default function IngredientPage() {
                 <button 
                   className="btn btn-outline-danger btn-sm w-100 rounded-pill"
                   data-bs-toggle="modal"
-                  data-bs-target={`#deleteModal-${i.id}`}
-                  onClick={() => handleDelete(i.id, i.data.name, 'ingredient')}
-
+                  data-bs-target={`#deleteModal`}
+                  onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'ingredient'})}
                 >
                   🗑️ ลบ
                 </button>
@@ -116,8 +107,8 @@ export default function IngredientPage() {
                       <button 
                         className="btn btn-outline-danger btn-sm w-100 rounded-pill"
                         data-bs-toggle="modal"
-                        data-bs-target={`#deleteModal-${i.id}`}
-                        onClick={() => handleDelete(i.id, i.data.name, 'special')}
+                        data-bs-target={`#deleteModal`}
+                        onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'special'})}
                       >
                         🗑️ ลบ
                       </button>
@@ -160,8 +151,8 @@ export default function IngredientPage() {
                       <button 
                         className="btn btn-outline-danger btn-sm w-100 rounded-pill"
                         data-bs-toggle="modal"
-                        data-bs-target={`#deleteModal-${i.id}`}
-                        onClick={() => handleDelete(i.id, i.data.name, 'source')}
+                        data-bs-target={`#deleteModal`}
+                        onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'source'})}
                       >
                         🗑️ ลบ
                       </button>
@@ -171,6 +162,7 @@ export default function IngredientPage() {
               </div>
             ))}
             <AddSourceModal />
+            <ConfirmToDeleteIngredient selectDelete={selectIDtoDelete} clear={clearSelDelete}/>
           </div>
         </div>
       </div>

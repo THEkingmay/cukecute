@@ -3,45 +3,46 @@ import { deleteSpecial } from "../firebases/specialIngredient";
 import { deleteSource } from "../firebases/source";
 
 import {DataContext} from "../pages/DataContextProvider";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
-export default function ConfirmToDeleteIngredient({ id, name , type}) {
+
+export default function ConfirmToDeleteIngredient({selectDelete , clear}) {
   const {fetchIngredient} = useContext(DataContext)
-  
+
    const handleDelete = async () => {
-  try {
-    if (type === 'ingredient') await deleteIngredient(id);
-    else if (type === 'special') await deleteSpecial(id);
-    else if (type === 'source') await deleteSource(id);
+    try {
+      if (selectDelete.type === 'ingredient') await deleteIngredient(selectDelete.id);
+      else if (selectDelete.type === 'special') await deleteSpecial(selectDelete.id);
+      else if (selectDelete.type === 'source') await deleteSource(selectDelete.id);
 
-    await fetchIngredient();
-  } catch (err) {
-    console.log(err);
-  } finally {
-    // ให้ใช้ id ให้ตรงกับ modal ที่ประกาศไว้
-    const modalId = `deleteModal-${id}`;
-    const myModalEl = document.getElementById(modalId);
+      await fetchIngredient();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      clear()
 
-    if (myModalEl) {
-      const modal = bootstrap.Modal.getInstance(myModalEl);
-      if (modal) {
-        modal.hide();
+      const modalId = `deleteModal`;
+      const myModalEl = document.getElementById(modalId);
+
+      if (myModalEl) {
+        const modal = bootstrap.Modal.getInstance(myModalEl);
+        if (modal) {
+          modal.hide();
+        } else {
+          // ถ้ายังไม่มี instance ให้สร้างขึ้นก่อน
+          const newModal = new bootstrap.Modal(myModalEl);
+          newModal.hide();
+        }
       } else {
-        // ถ้ายังไม่มี instance ให้สร้างขึ้นก่อน
-        const newModal = new bootstrap.Modal(myModalEl);
-        newModal.hide();
+        console.warn(`ไม่พบ modal ที่ id = ${modalId}`);
       }
-    } else {
-      console.warn(`ไม่พบ modal ที่ id = ${modalId}`);
     }
-  }
-};
-
+  };
 
   return (
     <div
       className="modal fade"
-      id={`deleteModal-${id}`}
+      id={`deleteModal`}
       tabIndex="-1"
       aria-labelledby="deleteModalLabel"
       aria-hidden="true"
@@ -57,11 +58,11 @@ export default function ConfirmToDeleteIngredient({ id, name , type}) {
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id={`close-delete-${id}`}
+              id={`close-delete`}
             ></button>
           </div>
           <div className="modal-body text-center">
-            <p>คุณต้องการลบ <strong>{name}</strong> หรือไม่?</p>
+            <p>คุณต้องการลบ <strong>{selectDelete.name}</strong> หรือไม่?</p>
             <p className="text-muted">ข้อมูลนี้จะหายไปอย่างถาวร ❗</p>
           </div>
           <div className="modal-footer justify-content-center">

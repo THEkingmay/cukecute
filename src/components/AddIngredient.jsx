@@ -61,6 +61,8 @@ const { fetchIngredient} = useContext(DataContext)
         setPricePerUnit(0);
         setUnit("kilogram");
         setGram(0);
+        setQB(0)
+        setQSM(0)
      }
     
   };

@@ -49,7 +49,7 @@ export default function DataContextProvider({ children }) {
   if(isLoading)return <div>กำลังโหลด...</div>
 
   return (
-    <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , ordersContext}}>
+    <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , fetchAllOrders, ordersContext}}>
       {children}
     </DataContext.Provider>
   )

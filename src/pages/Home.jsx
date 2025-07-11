@@ -3,10 +3,10 @@ import { DataContext } from "./DataContextProvider"
 import AddNewOrder from "../components/AddNewOrder"
 import UpdateOrderModal from "../components/UpdateOrderModal"
 import DeleteOrderModal from "../components/DeleteOrderModal"
+import { updateStatus } from "../firebases/orders"
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([])
-  
 
   const { ordersContext } = useContext(DataContext)
   const [selectOrderToUpdate , setupdate] = useState({})
@@ -18,10 +18,34 @@ const [deleteId, setDelete]= useState({})
 
   const formatDate = (date) => {
     const dateObj = new Date(date.seconds * 1000)
+    
     return dateObj.toLocaleString("th-TH", {
       dateStyle: "long",
       timeStyle: "short",
     })
+  }
+
+  const changeOredrStatus = async (id)=>{
+    let newStatus = ''
+    setOrders((prev)=>{
+      return prev.map((order)=>{
+        if(order.id!==id)return order
+        newStatus = !order.data.isDelivered
+        return{
+          ...order,
+          data:{
+            ...order.data , 
+            isDelivered: newStatus
+          }
+        }
+      })
+    })
+    try{
+      await updateStatus(id , newStatus)
+    }catch(err){
+      console.log(err)
+      alert(err)
+    }
   }
 
   return (
@@ -46,7 +70,7 @@ const [deleteId, setDelete]= useState({})
 
           return (
             <div className="col-md-6 col-lg-4 mb-4" key={o.id}>
-              <div className="card shadow-sm border-0 h-100">
+              <div className={`card shadow-sm  h-100 ${o.data.isDelivered ? 'bg-success-subtle' : 'bg-white'}`}>
                 <div className="card-body d-flex flex-column justify-content-between">
                   <div>
                     <h5 className="card-title">{name}</h5>
@@ -66,20 +90,21 @@ const [deleteId, setDelete]= useState({})
 
                   <div className="d-flex justify-content-between gap-2 mt-3">
                     <button 
-                    className="btn btn-outline-primary btn-sm w-100"
+                    className="btn btn-primary btn-sm w-100"
                      data-bs-toggle='modal'
                       data-bs-target='#updateOrder'
                       onClick={()=>setupdate(o)}
                     >✏️ แก้ไข</button>
                       <button 
-                      className="btn btn-outline-danger btn-sm w-100" 
+                      className="btn btn-danger btn-sm w-100" 
                       data-bs-toggle='modal'
                       data-bs-target='#deleteOrder'
                       onClick={()=>setDelete(o)}
                       >🗑️ ลบ</button>
                     <button
+                      onClick={()=>changeOredrStatus(o.id)}
                       className={`btn btn-sm w-100 ${
-                        isDelivered ? "btn-success" : "btn-warning text-dark"
+                        isDelivered ? "btn-success" : "btn btn-warning text-dark"
                       }`}
                     >
                       {isDelivered ? "✅ ส่งแล้ว" : "📦 ยังไม่ส่ง"}

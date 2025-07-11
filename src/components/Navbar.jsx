@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 
 export default function Navbar() {
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-success px-4">
       <Link className="navbar-brand d-flex align-items-center" to="/">
@@ -26,13 +27,13 @@ export default function Navbar() {
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ms-auto">
           <li className="nav-item">
-            <Link className="nav-link" to="/">Home</Link>
+            <Link className="nav-link" to="/">หน้าแรก</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/dashboard">Dashboard</Link>
+            <Link className="nav-link" to="/dashboard">สรุปผล</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/ingredient">Ingredient</Link>
+            <Link className="nav-link" to="/ingredient">วัตถุดิบ</Link>
           </li>
         </ul>
       </div>

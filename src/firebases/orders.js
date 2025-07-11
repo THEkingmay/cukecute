@@ -1,5 +1,5 @@
 import { db } from ".";
-import { getDocs , collection , addDoc , deleteDoc , where , query , Timestamp , doc} from "firebase/firestore";
+import { getDocs , collection , addDoc , deleteDoc , where , query , Timestamp , doc , updateDoc} from "firebase/firestore";
 
 const getAllOrders = async() =>{
     try{
@@ -22,6 +22,7 @@ const getAllOrders = async() =>{
 }
  
 const getOrdersByDate = async (selectDate) => {
+    if(!selectDate) selectDate=new Date().toISOString().split('T')[0]
   try {
     const rawDate = new Date(selectDate);  // selectDate เป็น "YYYY-MM-DD"
 
@@ -72,4 +73,17 @@ try{
     }
 }
 
-export {getAllOrders , addOrder  ,deleteOrder , getOrdersByDate}
+const updateStatus =async(id , newStatus) =>{
+    try{
+        const docRef = doc(db , 'orders' , id)
+        await updateDoc(docRef  , {
+            isDelivered : newStatus
+        } )
+        console.log("เปลี่ยนสถานะการส่งออเดอร์แล้วเป็น ", newStatus)
+    }catch(err){
+        console.log(err)
+        throw new Error(err)
+    }
+}
+
+export {getAllOrders , addOrder  ,deleteOrder , getOrdersByDate , updateStatus}

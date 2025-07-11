@@ -1,7 +1,7 @@
 import { createContext, useEffect , useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { getAllIngredient } from "../firebases/ingredient"
-import { getAllOrders } from "../firebases/orders"
+import { getOrdersByDate} from "../firebases/orders"
 import { getAllSource } from "../firebases/source"
 import { getAllSpecial } from "../firebases/specialIngredient"
 
@@ -31,25 +31,27 @@ export default function DataContextProvider({ children }) {
     }
   }
   
-  const fetchAllOrders = async () =>{
-    try{
-        const data = await getAllOrders()
-       if(data)setOrders(data)
-    }catch(err){
-        alert(err)
-    }
+  const fetchAllOrdersByDate = async () => {
+  try {
+    const today = new Date().toISOString().split('T')[0]; // "2025-07-11"
+    const data = await getOrdersByDate(today);
+    if (data) setOrders(data);
+  } catch (err) {
+    alert(err.message || err);
   }
+};
+
 
   useEffect(()=>{
     fetchIngredient()
-    fetchAllOrders()
+    fetchAllOrdersByDate()
     setLoading(false)
   },[])
 
   if(isLoading)return <div>กำลังโหลด...</div>
 
   return (
-    <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , fetchAllOrders, ordersContext}}>
+    <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , fetchAllOrdersByDate, ordersContext}}>
       {children}
     </DataContext.Provider>
   )

@@ -10,7 +10,7 @@ import { Timestamp } from "firebase/firestore";
 
 export default function AddNewOrder() {
   const [isLoad , setLoad] = useState(false)
-  const { ingredientContext, specialContext, sourceContext  , fetchAllOrders} = useContext(DataContext);
+  const { ingredientContext, specialContext, sourceContext  , fetchAllOrdersByDate} = useContext(DataContext);
   const [ingredientList, setIngredient] = useState([]);
   const [specialList, setSpecial] = useState([]);
   const [sourceList, setSource] = useState([]);
@@ -92,7 +92,8 @@ export default function AddNewOrder() {
     try{
       setLoad(true)
       await addOrder(newOrder)
-      await fetchAllOrders()
+       const today = new Date().toISOString().split('T')[0]; 
+      await fetchAllOrdersByDate(today)
       console.log("บันทึกออเดอร์ใหม่สำเร็จ ",newOrder) 
     }catch(err){
       console.log(err)

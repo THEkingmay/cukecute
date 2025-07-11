@@ -2,12 +2,15 @@ import { useState, useContext, useEffect } from "react"
 import { DataContext } from "./DataContextProvider"
 import AddNewOrder from "../components/AddNewOrder"
 import UpdateOrderModal from "../components/UpdateOrderModal"
+import DeleteOrderModal from "../components/DeleteOrderModal"
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([])
+  
+
   const { ordersContext } = useContext(DataContext)
   const [selectOrderToUpdate , setupdate] = useState({})
-
+const [deleteId, setDelete]= useState({})
 
   useEffect(() => {
     setOrders(ordersContext)
@@ -39,7 +42,7 @@ export default function Dashboard() {
 
       <div className="row">
         {orders.map((o) => {
-          const { name, totalPrice, deliveryFee, date, isDelivered } = o.data
+          const { name, totalPrice, deliveryFee, date, isDelivered , description } = o.data
 
           return (
             <div className="col-md-6 col-lg-4 mb-4" key={o.id}>
@@ -48,6 +51,7 @@ export default function Dashboard() {
                   <div>
                     <h5 className="card-title">{name}</h5>
                     <ul className="list-unstyled">
+                      <li><strong>ส่งที่ :</strong> {description} </li>
                       <li>🛒 <strong>สินค้า:</strong> {totalPrice} บาท</li>
                       <li>🚚 <strong>ค่าส่ง:</strong> {deliveryFee} บาท</li>
                       <li>📅 <strong>สั่งเมื่อ:</strong> {formatDate(date)}</li>
@@ -69,6 +73,9 @@ export default function Dashboard() {
                     >✏️ แก้ไข</button>
                       <button 
                       className="btn btn-outline-danger btn-sm w-100" 
+                      data-bs-toggle='modal'
+                      data-bs-target='#deleteOrder'
+                      onClick={()=>setDelete(o)}
                       >🗑️ ลบ</button>
                     <button
                       className={`btn btn-sm w-100 ${
@@ -85,6 +92,7 @@ export default function Dashboard() {
         })}
       </div>
       <UpdateOrderModal selectOrder={selectOrderToUpdate}/>
+      <DeleteOrderModal selectDelete={deleteId}/>
     </div>
   )
 }

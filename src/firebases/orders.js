@@ -1,5 +1,5 @@
 import { db } from ".";
-import { getDocs , collection , addDoc , deleteDoc} from "firebase/firestore";
+import { getDocs , collection , addDoc , deleteDoc , where , query , Timestamp , doc} from "firebase/firestore";
 
 const getAllOrders = async() =>{
     try{
@@ -20,6 +20,39 @@ const getAllOrders = async() =>{
         throw new Error(err)
     }
 }
+ 
+const getOrdersByDate = async (selectDate) => {
+  try {
+    const rawDate = new Date(selectDate);  // selectDate เป็น "YYYY-MM-DD"
+
+    // สร้าง start และ end โดยไม่ทำลาย rawDate
+    const start = new Date(rawDate);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(rawDate);
+    end.setHours(23, 59, 59, 999);
+
+    const q = query(
+      collection(db, "orders"),
+      where("date", ">=", Timestamp.fromDate(start)),
+      where("date", "<=", Timestamp.fromDate(end))
+    );
+
+    const snapshot = await getDocs(q);
+
+    const orders = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+
+    console.log(`orders on ${selectDate}:`, orders);
+    return orders;
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
 
 const addOrder = async (newOrder)=>{
     try{
@@ -39,4 +72,4 @@ try{
     }
 }
 
-export {getAllOrders , addOrder  ,deleteOrder}
+export {getAllOrders , addOrder  ,deleteOrder , getOrdersByDate}

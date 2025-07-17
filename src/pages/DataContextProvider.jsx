@@ -4,6 +4,7 @@ import { getAllIngredient } from "../firebases/ingredient"
 import { getOrdersByDate} from "../firebases/orders"
 import { getAllSource } from "../firebases/source"
 import { getAllSpecial } from "../firebases/specialIngredient"
+import Loading from "../components/Loading"
 
 const DataContext = createContext()
 
@@ -59,7 +60,7 @@ useEffect(() => {
   fetchAll();
 }, []);
 
-  if(isLoading)return <div>กำลังโหลด...</div>
+  if(isLoading)return <div><Loading/></div>
 
   return (
     <DataContext.Provider value={{ navigate, location , ingredientContext , specialContext , sourceContext, fetchIngredient  , fetchAllOrdersByDate, ordersContext}}>

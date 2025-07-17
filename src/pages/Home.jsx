@@ -12,6 +12,8 @@ export default function Dashboard() {
   const [selectOrderToUpdate , setupdate] = useState({})
 const [deleteId, setDelete]= useState({})
 
+const [isChanging , setIsChanging] = useState(false)
+
   useEffect(() => {
     setOrders(ordersContext)
   }, [ordersContext])
@@ -26,25 +28,27 @@ const [deleteId, setDelete]= useState({})
   }
 
   const changeOredrStatus = async (id)=>{
-    let newStatus = ''
-    setOrders((prev)=>{
-      return prev.map((order)=>{
-        if(order.id!==id)return order
-        newStatus = !order.data.isDelivered
-        return{
-          ...order,
-          data:{
-            ...order.data , 
-            isDelivered: newStatus
-          }
-        }
-      })
-    })
+    let newStatus = !(orders.find(order => order.id===id).data.isDelivered)
     try{
+      setIsChanging(true)
       await updateStatus(id , newStatus)
     }catch(err){
       console.log(err)
       alert(err)
+    }finally{
+      setIsChanging(false)
+      setOrders((prev)=>{
+        return prev.map((order)=>{
+          if(order.id!==id)return order
+          return{
+            ...order,
+            data:{
+              ...order.data , 
+              isDelivered: newStatus
+            }
+          }
+        })
+      })
     }
   }
 
@@ -94,20 +98,21 @@ const [deleteId, setDelete]= useState({})
                      data-bs-toggle='modal'
                       data-bs-target='#updateOrder'
                       onClick={()=>setupdate(o)}
-                    >✏️ แก้ไข</button>
+                    > แก้ไข</button>
                       <button 
                       className="btn btn-danger btn-sm w-100" 
                       data-bs-toggle='modal'
                       data-bs-target='#deleteOrder'
                       onClick={()=>setDelete(o)}
-                      >🗑️ ลบ</button>
+                      > ลบ</button>
                     <button
+                      disabled={isChanging}
                       onClick={()=>changeOredrStatus(o.id)}
                       className={`btn btn-sm w-100 ${
                         isDelivered ? "btn-success" : "btn btn-warning text-dark"
                       }`}
                     >
-                      {isDelivered ? "✅ ส่งแล้ว" : "📦 ยังไม่ส่ง"}
+                      {isDelivered  ? "✅ ส่งแล้ว" : " ยังไม่ส่ง"}
                     </button>
                   </div>
                 </div>
@@ -116,7 +121,7 @@ const [deleteId, setDelete]= useState({})
           )
         })}
       </div>
-      {orders.length===0 && <div className="display-6 d-flex justify-content-center align-items-center"> คูณยังไม่มีออเดอร์ในวันนี้ </div>}
+      {orders.length===0 && <div className="display-6 d-flex justify-content-center align-items-center"> คุณยังไม่มีออเดอร์ในวันนี้ </div>}
       <UpdateOrderModal selectOrder={selectOrderToUpdate}/>
       <DeleteOrderModal selectDelete={deleteId}/>
     </div>

@@ -116,6 +116,7 @@ const [deleteId, setDelete]= useState({})
           )
         })}
       </div>
+      {orders.length===0 && <div className="display-6 d-flex justify-content-center align-items-center"> คูณยังไม่มีออเดอร์ในวันนี้ </div>}
       <UpdateOrderModal selectOrder={selectOrderToUpdate}/>
       <DeleteOrderModal selectDelete={deleteId}/>
     </div>

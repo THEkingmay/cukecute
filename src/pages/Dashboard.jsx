@@ -14,16 +14,17 @@ import {
 } from "react-icons/fa";
 
 import DeleteOrderModal from "../components/DeleteOrderModal";
-
+import UpdateOrderModal from "../components/UpdateOrderModal";
 
 export default function Dashboard() {
   const [selectOrerDelete , setSelDel ] = useState({})
+  const [selectOrderUpdate , setUpdate] = useState({})
 
   const [selectDay, setDay] = useState("");
   const [filterOrder, setFilterOrder] = useState([]);
   const [loading, setLoad] = useState(false);
 
-  const { ingredientContext, specialContext, sourceContext } = useContext(DataContext);
+  const { ingredientContext, specialContext, sourceContext ,  ordersContext  } = useContext(DataContext);
   const [ingredient, setIngredient] = useState([]);
   const [special, setSpecial] = useState([]);
   const [source, setSource] = useState([]);
@@ -39,6 +40,11 @@ export default function Dashboard() {
     setDay(date);
     fetchOrder(date);
   }, []);
+
+  useEffect(()=>{
+    fetchOrder(selectDay)
+  },[ordersContext])
+
 
   const handleSearch = () => {
     if (!selectDay) {
@@ -451,10 +457,15 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                  <div className="col-12 d-flex mt-2 gap-2">
-                      <button className="btn btn-warning">แก้ไข</button>
+                  <div className="col-12 d-flex mt-2 gap-2 d-flex">
                       <button 
-                      className="btn btn-danger"
+                      className="btn btn-warning w-50"
+                      data-bs-toggle='modal'
+                      data-bs-target='#updateOrder'
+                      onClick={()=>setUpdate(order)}
+                      >แก้ไข</button>
+                      <button 
+                      className="btn btn-danger w-50"
                       data-bs-toggle='modal'
                       data-bs-target='#deleteOrder'
                       onClick={()=>setSelDel(order)}
@@ -468,6 +479,7 @@ export default function Dashboard() {
           );
         })}
         <DeleteOrderModal selectDelete={selectOrerDelete}/>
+        <UpdateOrderModal selectOrder={selectOrderUpdate}/>
       </div>
     </div>
   </div>

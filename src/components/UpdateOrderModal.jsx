@@ -1,9 +1,45 @@
-import { useEffect } from "react";
+import { useEffect , useContext, useState} from "react";
+import {DataContext } from "../pages/DataContextProvider";
 
 export default function UpdateOrderModal({ selectOrder }) {
-    useEffect(()=>{
+    const { ingredientContext, specialContext, sourceContext  , fetchAllOrdersByDate} = useContext(DataContext);
+
+    const [ingredientList, setIngredient] = useState([]);
+    const [specialList, setSpecial] = useState([]);
+    const [sourceList, setSource] = useState([]);
+
+    const [description , setDescription]= useState('')
+    const [cupSize, setCup] = useState(null);
+    const [selectToping, setSelectToping] = useState({});
+    const [selectSource, setSelectSource] = useState([]);
+    const [selectSpecial, setSelectSpecial] = useState({});
+    const [deliveryFee, setDeliFee] = useState(0);
+    const [date , setDate] = useState('')
+
+    const formatDate = (date) => {
+        const d = new Date(date.toDate());
+        console.log("date : " ,d.toISOString().split("T")[0])
+        return d.toISOString().split("T")[0]; // return "2025-07-17"
+    }
+    useEffect(() => {
+        if (!selectOrder || !selectOrder.data) return;
+
+        const data = selectOrder.data;
+
+        setCup(data.cupSize || '');
+        setDate(formatDate(data.date) || '');
+        setDeliFee(data.deliveryFee || '');
+        setDescription(data.description || '');
+        setSelectToping(data.selectToping || '');
+        setSelectSource(data.selectSource || '');
+        setSelectSpecial(data.selectSpecial || '');
         console.log(selectOrder)
-    },[selectOrder])
+    }, [selectOrder]);
+
+    useEffect(() => setIngredient(ingredientContext), [ingredientContext]);
+    useEffect(() => setSpecial(specialContext), [specialContext]);
+    useEffect(() => setSource(sourceContext), [sourceContext]);
+
     return (
         <div 
             className="modal fade"

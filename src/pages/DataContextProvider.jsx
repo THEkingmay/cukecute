@@ -20,12 +20,21 @@ export default function DataContextProvider({ children }) {
 
   const fetchIngredient = async()=>{
     try{
-        const data = await getAllIngredient()
+        const data = await getAllIngredient() 
+        const special = await getAllSpecial() 
+        const source = await getAllSource() 
+
+        // let data = await import('../../devData/ingredient.json') // comment this line when production
+        // data = data.default // comment this line when production
+        // let special = await import('../../devData/special.json') // comment this line when production
+        // special = special.default // comment this line when production
+        // let source = await import('../../devData/source.json') // comment this line when production
+        // source = source.default // comment this line when production
+
+      
         if(data) setIngredient(data)
-        const special = await getAllSpecial()
         if(special) setSpecial(special)
-        const souce = await getAllSource()
-        if(souce) setSource(souce)
+        if(source) setSource(source) 
     }catch(err){
         alert(err)
     }
@@ -41,12 +50,14 @@ export default function DataContextProvider({ children }) {
   }
 };
 
-
-  useEffect(()=>{
-    fetchIngredient()
-    fetchAllOrdersByDate()
-    setLoading(false)
-  },[])
+useEffect(() => {
+  const fetchAll = async () => {
+    await fetchIngredient();
+    await fetchAllOrdersByDate();
+    setLoading(false);
+  };
+  fetchAll();
+}, []);
 
   if(isLoading)return <div>กำลังโหลด...</div>
 

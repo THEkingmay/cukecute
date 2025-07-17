@@ -43,8 +43,8 @@ export default function Dashboard() {
 
   useEffect(()=>{
     fetchOrder(selectDay)
-  },[ordersContext])
-
+  },[ordersContext]) // ถ้ามีการเรียก fectAllOrderbydate ผ่าน context ทำให้ contexr เปลี่ยน จึงมีการเรียก useEffect นี้อีกที
+ 
 
   const handleSearch = () => {
     if (!selectDay) {

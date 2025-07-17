@@ -86,4 +86,15 @@ const updateStatus =async(id , newStatus) =>{
     }
 }
 
-export {getAllOrders , addOrder  ,deleteOrder , getOrdersByDate , updateStatus}
+const updateOrder = async (id , data)=>{
+    try{
+        const docRef = doc(db, 'orders' , id)
+        await updateDoc(docRef , data)
+        console.log("update order id : " , id , "with new data : "  ,data)
+    }catch(err){
+        console.log(err)
+        throw new Error(err)
+    }
+}
+
+export {getAllOrders , addOrder  ,deleteOrder, updateOrder , getOrdersByDate , updateStatus}

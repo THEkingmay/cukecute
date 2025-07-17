@@ -45,6 +45,7 @@ export default function DataContextProvider({ children }) {
   try {
     const today = new Date().toISOString().split('T')[0]; // "2025-07-11"
     const data = await getOrdersByDate(today);
+    console.log(data)
     if (data) setOrders(data);
   } catch (err) {
     alert(err.message || err);

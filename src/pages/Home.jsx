@@ -94,12 +94,14 @@ const [isChanging , setIsChanging] = useState(false)
 
                   <div className="d-flex justify-content-between gap-2 mt-3">
                     <button 
+                    disabled={isChanging}
                     className="btn btn-primary btn-sm w-100"
                      data-bs-toggle='modal'
                       data-bs-target='#updateOrder'
                       onClick={()=>setupdate(o)}
                     > แก้ไข</button>
                       <button 
+                      disabled={isChanging}
                       className="btn btn-danger btn-sm w-100" 
                       data-bs-toggle='modal'
                       data-bs-target='#deleteOrder'

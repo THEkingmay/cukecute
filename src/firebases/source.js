@@ -1,5 +1,5 @@
 import { db } from ".";
-import { getDocs , collection , addDoc , doc, deleteDoc } from "firebase/firestore";
+import { getDocs , collection , addDoc , doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 const getAllSource = async () =>{
     try{
@@ -37,5 +37,14 @@ const deleteSource = async(id)=>{
         throw new Error(err)
     }
 }
+const updateSource = async(id , newData)=>{
+    try{
+        await updateDoc(doc(db, 'source' , id) , newData)
+        console.log('อับเดตซอส ไอดี' , id , 'new data : ' , newData)
+    }catch(err){
+        console.log(err)
+        throw new Error(err)
+    }
+}
 
-export {getAllSource , addSource , deleteSource}
+export {getAllSource , addSource ,  updateSource , deleteSource}

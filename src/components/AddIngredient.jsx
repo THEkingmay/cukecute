@@ -4,6 +4,8 @@ import { useContext } from "react";
 import {DataContext} from "../pages/DataContextProvider";
 
 export default function AddIngredientModal() {
+  const [isAdd , setAdd]  =useState(false)
+
   const [name, setName] = useState("");
   const [pricePerUnit, setPricePerUnit] = useState(0);
   const [unit, setUnit] = useState("kilogram");
@@ -48,21 +50,23 @@ const { fetchIngredient} = useContext(DataContext)
         quantitySmall
     };
     try{
-        document.getElementById("closeModalBtn").click(); // ปิด modal
-        await addNewIngredient(newIngredient)
+      setAdd(true)
         console.log("✅ วัตถุดิบใหม่:", newIngredient);
-        fetchIngredient()
+        await addNewIngredient(newIngredient)
+        await fetchIngredient()
     }catch(err){
         alert(err)
         console.log(err)
     }finally{
         // reset
+        setAdd(false)
         setName("");
         setPricePerUnit(0);
         setUnit("kilogram");
         setGram(0);
         setQB(0)
         setQSM(0)
+        document.getElementById("closeModalBtn").click(); // ปิด modal
      }
     
   };
@@ -184,14 +188,15 @@ const { fetchIngredient} = useContext(DataContext)
 
           <div className="modal-footer">
             <button
+              disabled={isAdd}
               type="button"
               className="btn btn-secondary"
               data-bs-dismiss="modal"
             >
               ❌ ยกเลิก
             </button>
-            <button className="btn btn-primary" onClick={submitAdd}>
-              ✅ เพิ่มวัตถุดิบ
+            <button className="btn btn-primary" onClick={submitAdd} disabled={isAdd}>
+              {isAdd ? 'กำลังเพิ่ม... ' : '✅ เพิ่มวัตถุดิบ'}
             </button>
           </div>
         </div>

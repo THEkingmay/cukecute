@@ -3,6 +3,8 @@ import {DataContext} from "../pages/DataContextProvider";
 import { addSource } from "../firebases/source";
 
 export default function AddSourceModal() {
+  const [isAdd , setAdd] = useState(false)
+
   const [name, setName] = useState("");
   const [pricePerUnit, setPricePerUnit] = useState(0);
   const [unit, setUnit] = useState("kilogram");
@@ -55,7 +57,7 @@ const { fetchIngredient} = useContext(DataContext)
     };
 
     try {
-     document.getElementById("closeSourceModalBtn").click(); // ปิด modal
+      setAdd(true)
       await addSource(newIngredient);
       console.log("✅ ซอสใหม่:", newIngredient);
       await fetchIngredient();
@@ -63,7 +65,9 @@ const { fetchIngredient} = useContext(DataContext)
       alert("❌ เกิดข้อผิดพลาด: " + err.message);
       console.error(err);
     } finally {
+      setAdd(false)
       resetForm();
+      document.getElementById("closeSourceModalBtn").click(); // ปิด modal
     }
   };
 
@@ -189,11 +193,12 @@ const { fetchIngredient} = useContext(DataContext)
               className="btn btn-secondary"
               data-bs-dismiss="modal"
               id="closeModal"
+              disabled={isAdd}
             >
               ❌ ยกเลิก
             </button>
-            <button className="btn btn-primary" onClick={submitAdd}>
-              ✅ เพิ่มซอส
+            <button disabled={isAdd} className="btn btn-primary" onClick={submitAdd}>
+              {isAdd ? 'กำลังเพิ่ม...' : '✅ เพิ่มซอส'}
             </button>
           </div>
         </div>

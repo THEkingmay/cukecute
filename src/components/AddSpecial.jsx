@@ -3,6 +3,8 @@ import { DataContext } from "../pages/DataContextProvider";
 import { addSpecial } from "../firebases/specialIngredient";
 
 export default function AddSpecialModal() {
+  const [isAdd , setAdd] = useState(false)
+
   const [name, setName] = useState("");
   const [pricePerUnit, setPricePerUnit] = useState(0);
   const [unit, setUnit] = useState("kilogram");
@@ -60,7 +62,7 @@ export default function AddSpecialModal() {
     };
 
     try {   
-        document.getElementById("closeSpecialModalBtn").click(); // ปิด modal
+      setAdd(true)
       await addSpecial(newIngredient);
       console.log("✅ วัตถุดิบพิเศษใหม่:", newIngredient);
       await fetchIngredient();
@@ -68,6 +70,8 @@ export default function AddSpecialModal() {
       alert("❌ เกิดข้อผิดพลาด: " + err.message);
       console.error(err);
     } finally {
+      setAdd(false)
+      document.getElementById("closeSpecialModalBtn").click(); // ปิด modal
       resetForm();
     }
   };
@@ -204,11 +208,12 @@ export default function AddSpecialModal() {
               className="btn btn-secondary"
               data-bs-dismiss="modal"
               id="closeModal"
-            >
+              disabled={isAdd}
+              >
               ❌ ยกเลิก
             </button>
-            <button className="btn btn-primary" onClick={submitAdd}>
-              ✅ เพิ่มวัตถุดิบ
+            <button className="btn btn-primary" onClick={submitAdd}disabled={isAdd}>
+              {isAdd ? 'กำลังเพิ่ม...':'✅ เพิ่มวัตถุดิบ'}
             </button>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { db } from ".";
-import { getDocs , collection , addDoc , doc , deleteDoc } from "firebase/firestore";
+import { getDocs , collection , addDoc , doc , deleteDoc , updateDoc } from "firebase/firestore";
 
 const getAllSpecial = async () =>{
     try{
@@ -37,5 +37,13 @@ const deleteSpecial = async(id)=>{
         throw new Error(err)
     }
 }
-
-export {getAllSpecial , addSpecial , deleteSpecial}
+const updateSpecial = async(id , newData)=>{
+    try{
+        await updateDoc(doc(db, 'special' , id) , newData)
+        console.log('update special ingredient id : ' , id , 'new data : ' , newData)
+    }catch(err){
+        console.log(err)
+        throw new Error(err)
+    }
+}
+export {getAllSpecial , addSpecial , updateSpecial ,deleteSpecial}

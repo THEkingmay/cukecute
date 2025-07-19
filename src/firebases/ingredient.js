@@ -1,5 +1,5 @@
 import { db } from ".";
-import { getDocs , doc , collection , addDoc , deleteDoc} from "firebase/firestore";
+import { getDocs , doc , collection , addDoc , deleteDoc, updateDoc} from "firebase/firestore";
 
 const getAllIngredient = async () =>{
     let ingredients  = [] 
@@ -38,5 +38,13 @@ const deleteIngredient = async(id)=>{
         throw new Error(err)
     }
 }
-
-export {getAllIngredient , addNewIngredient , deleteIngredient }
+const updateIngredient = async(id , newData)=>{
+    try{
+        await updateDoc(doc(db, 'ingredients',id) , newData)
+        console.log("update ingredient id : " , id , 'new data : ' , newData)
+    }catch(err){
+        console.log(err)
+        throw new Error(err)
+    }
+}
+export {getAllIngredient , addNewIngredient , updateIngredient,  deleteIngredient }

@@ -5,7 +5,7 @@ import AddSourceModal from "../components/AddSource"
 import AddSpecialModal from "../components/AddSpecial"
 
 import ConfirmToDeleteIngredient from "../components/ConfirmDeleteIngredient"
-
+import UpdateIngredientModal from "../components/UpdateIngredient"
 
 export default function IngredientPage() {
   const [ingredient, setIngredient] = useState([])
@@ -18,6 +18,7 @@ export default function IngredientPage() {
     name:"" , 
     type : "" 
   })
+
   const clearSelDelete = ()=>{
     setIdDelete({id:'',name:'',type:''})
   }
@@ -28,7 +29,10 @@ export default function IngredientPage() {
     setSource(sourceContext)
   }, [ingredientContext , sourceContext , specialContext])
 
-  const { fetchIngredient } = useContext(DataContext); // ถ้าอยู่ใน context
+  const [selectUpdate , setSelectUpdate] = useState({
+    object:{} ,
+    type:''
+  })
 
  return (
   <div className="container mt-4">
@@ -46,7 +50,7 @@ export default function IngredientPage() {
 
     {/* วัตถุดิบทั่วไป */}
     <div className="row shadow-sm rounded  bg-white mb-3 p-4">
-      <div className="h5 mb-3 fw-semibold border-bottom pb-2 ">วัตถุดิบทั่วไป</div>
+      <div className="h5 mb-3 fw-semibold pb-2 ">วัตถุดิบทั่วไป</div>
       {ingredient.map((i) => (
         <div className="col-md-6 col-lg-3 mb-3" key={i.id}>
           <div className="card border-0 shadow-sm h-100">
@@ -58,14 +62,22 @@ export default function IngredientPage() {
                 🎈 <strong>ถ้วยเล็ก:</strong> {i.data.quantitySmall} กรัม<br/>
                 🎈 <strong>ถ้วยใหญ่:</strong> {i.data.quantityBig} กรัม
               </p>
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-between gap-2">
                 <button 
-                  className="btn btn-outline-danger btn-sm w-100 rounded-pill"
+                      className="btn btn-warning btn-sm w-50"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#updateIngredient`}
+                        onClick={()=>setSelectUpdate({object:i , type:'ingredient'})}
+                        >
+                          แก้ไข
+                      </button>
+                <button 
+                  className="btn btn-danger btn-sm w-50"
                   data-bs-toggle="modal"
                   data-bs-target={`#deleteModal`}
                   onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'ingredient'})}
                 >
-                  🗑️ ลบ
+                  ลบ
                 </button>
               </div>
             </div>
@@ -103,14 +115,22 @@ export default function IngredientPage() {
                       🎈 <strong>ถ้วยใหญ่:</strong> {i.data.quantityBig} กรัม<br/>
                       💵 <strong>ราคาต่อ 1 ที่:</strong> {i.data.plusPrice} บาท
                     </p>
-                    <div className="d-flex justify-content-end">
+                    <div className="d-flex justify-content-between gap-2">
                       <button 
-                        className="btn btn-outline-danger btn-sm w-100 rounded-pill"
+                      className="btn btn-warning btn-sm w-50"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#updateIngredient`}
+                         onClick={()=>setSelectUpdate({object:i , type:'special'})}
+                        >
+                          แก้ไข
+                      </button>
+                      <button 
+                        className="btn btn-danger btn-sm w-50 "
                         data-bs-toggle="modal"
                         data-bs-target={`#deleteModal`}
                         onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'special'})}
                       >
-                        🗑️ ลบ
+                        ลบ
                       </button>
                     </div>
                   </div>
@@ -147,14 +167,22 @@ export default function IngredientPage() {
                       🎈 <strong>ถ้วยเล็ก:</strong> {i.data.quantitySmall} กรัม<br/>
                       🎈 <strong>ถ้วยใหญ่:</strong> {i.data.quantityBig} กรัม
                     </p>
-                    <div className="d-flex justify-content-end">
+                    <div className="d-flex justify-content-between gap-2 ">
                       <button 
-                        className="btn btn-outline-danger btn-sm w-100 rounded-pill"
+                      className="btn btn-warning btn-sm w-50"
+                        data-bs-toggle="modal"
+                        data-bs-target={`#updateIngredient`}
+                         onClick={()=>setSelectUpdate({object:i , type:'source'})}
+                        >
+                          แก้ไข
+                      </button>
+                      <button 
+                        className="btn btn-danger btn-sm w-50"
                         data-bs-toggle="modal"
                         data-bs-target={`#deleteModal`}
                         onClick={()=>setIdDelete({id:i.id , name:i.data.name, type:'source'})}
                       >
-                        🗑️ ลบ
+                         ลบ
                       </button>
                     </div>
                   </div>
@@ -163,6 +191,7 @@ export default function IngredientPage() {
             ))}
             <AddSourceModal />
             <ConfirmToDeleteIngredient selectDelete={selectIDtoDelete} clear={clearSelDelete}/>
+            <UpdateIngredientModal ingredient={selectUpdate} />
           </div>
         </div>
       </div>

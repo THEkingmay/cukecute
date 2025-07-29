@@ -21,9 +21,9 @@ export default function DataContextProvider({ children }) {
 
   const fetchIngredient = async()=>{
     try{
-        const data = await getAllIngredient() 
-        const special = await getAllSpecial() 
-        const source = await getAllSource() 
+        const data = await getAllIngredient()  // comment this line when dev
+        const special = await getAllSpecial() // comment this line when dev
+        const source = await getAllSource() // comment this line when dev
 
         // let data = await import('../../devData/ingredient.json') // comment this line when production
         // data = data.default // comment this line when production

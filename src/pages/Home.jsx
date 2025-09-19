@@ -63,7 +63,7 @@ const [isChanging , setIsChanging] = useState(false)
           className="btn btn-success"
           data-bs-toggle='modal'
           data-bs-target='#addOrderModal'
-          >เพิ่มออเดอร์
+          >เพิ่มออเดอร์ตรงนี้
         </button>
         <AddNewOrder/>
       </h3>
